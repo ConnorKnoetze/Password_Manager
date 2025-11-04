@@ -17,6 +17,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class App extends JFrame {
     private final CardLayout cardLayout = new CardLayout();
@@ -28,7 +29,7 @@ public class App extends JFrame {
     private final Page[] pages = Page.values();
     private static String jsonContents;
 
-    private static final String MASTER_KEY = "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVphYmNkZWY=";
+    private static String MASTER_KEY = "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVphYmNkZWY=";
 
     public App(){
         DataReader dataReader = new DataReader();
@@ -75,18 +76,29 @@ public class App extends JFrame {
     private Auth getAuthPanel() {
         Auth authPanel = new Auth();
         authPanel.addPropertyChangeListener("authenticated", evt -> {
-
             authenticated = (boolean) evt.getNewValue();
             if (authenticated) {
+
                 DataReader dataReader = new DataReader();
                 jsonContents = dataReader.readEncryptedCredentials();
                 jsonParser = new JsonParser(jsonContents);
 
                 cards.add(new Home(), Page.HOME.getName());
-                cards.add(new View(jsonParser), Page.VIEW.getName());
+
+                View viewPanel = new View(jsonParser, MASTER_KEY);
+                viewPanel.addPropertyChangeListener("credentialDeleted", e -> {
+                    DataReader dr = new DataReader();
+                    jsonParser = new JsonParser(dr.readEncryptedCredentials());
+                    viewPanel.reload(jsonParser);
+                });
+                cards.add(viewPanel, Page.VIEW.getName());
+
                 Add addPanel = new Add(credentialsManager);
                 addPanel.addPropertyChangeListener("credentialAdded", e -> {
                     System.out.println("New credential added: " + credentialsManager.toString());
+                    DataReader dr = new DataReader();
+                    jsonParser = new JsonParser(dr.readEncryptedCredentials());
+                    viewPanel.reload(jsonParser);
                 });
                 cards.add(addPanel, Page.ADD.getName());
                 cards.add(new Generate(), Page.GENERATE.getName());
@@ -156,21 +168,10 @@ public class App extends JFrame {
         });
     }
 
-    private void decryptCredentialsAsync(Decryptor decryptor) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<?> future = executor.submit(() -> {
-            try {
-                decryptor.decryptAllCredentials();
-            } catch (IOException e) {
-                System.err.println("Failed to decrypt credentials: " + e.getMessage());
-            }
-        });
-    }
-
     private void executeEncryption(boolean logout) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<?> future = executor.submit(() -> {
-            DataWriter dataWriter = new DataWriter(credentialsManager);
+            DataWriter dataWriter = new DataWriter(credentialsManager, MASTER_KEY);
             if (credentialsManager.isEmpty()) {
                 System.out.println("No credentials to save.");
                 dataWriter.writeJson(jsonParser);

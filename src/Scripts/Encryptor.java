@@ -10,10 +10,12 @@ import java.util.concurrent.*;
 
 public class Encryptor {
     private static final String EXECUTABLES_PATH = System.getProperty("user.dir")+"\\AES\\encrypt\\encrypt.exe";
-    private static final String MASTER_KEY = "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVphYmNkZWY=";
+    private static String MASTER_KEY;
 
 
-    public Encryptor() {}
+    public Encryptor(String MasterKey) {
+        MASTER_KEY = MasterKey;
+    }
 
     public void encrypt(PlainText plainText) throws IOException {
         List<String> cmd = new ArrayList<>();
@@ -49,15 +51,5 @@ public class Encryptor {
             es.shutdownNow();
         }
 
-    }
-    public static void main(String[] args) {
-        PlainText plainText = new PlainText("user", "password");
-        Encryptor encryptor = new Encryptor();
-        try {
-            encryptor.encrypt(plainText);
-            System.out.println("Encryption successful");
-        } catch (IOException e) {
-            System.err.println("Encryption failed: " + e.getMessage());
-        }
     }
 }

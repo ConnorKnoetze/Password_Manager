@@ -18,10 +18,4 @@ public class GenerateMasterKey {
         }
         return masterKey.append("=").toString();
     }
-
-    public static void main(String[] args) {
-        String masterKey = generateMasterKey();
-        System.out.println("Generated Master Key: " + masterKey);
-    }
-
 }

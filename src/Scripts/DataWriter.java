@@ -11,14 +11,16 @@ import java.io.*;
 import java.util.HashMap;
 
 public class DataWriter extends FileWriter {
-    private final CredentialsManager credentialsManager;
-    private final Encryptor encryptor;
+    private CredentialsManager credentialsManager;
+    private Encryptor encryptor;
     private static final String CREDS_PATH = System.getProperty("user.dir") + "\\creds.json";
     private String credsToWrite;
 
-    public DataWriter(CredentialsManager credentialsManager) {
+    public DataWriter(){}
+
+    public DataWriter(CredentialsManager credentialsManager, String MasterKey) {
         this.credentialsManager = credentialsManager;
-        this.encryptor = new Encryptor();
+        this.encryptor = new Encryptor(MasterKey);
     }
 
     public String EncryptCredentials(String JSONContents, JsonParser jsonParser) {

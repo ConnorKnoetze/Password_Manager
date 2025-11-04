@@ -5,6 +5,7 @@ import DomainModel.Credential;
 import DomainModel.CredentialsManager;
 import DomainModel.Domain;
 import DomainModel.DomainsList;
+import Scripts.DataWriter;
 import Scripts.Decryptor;
 import Utilities.JsonParser;
 
@@ -15,20 +16,32 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class View extends JPanel {
-    public View(JsonParser jsonParser) {
+    public static String MASTER_KEY;
+    private JsonParser jsonParser;
+    private final JPanel credentialsContainer;
+
+    public View(JsonParser jsonParser, String masterKey) {
+        MASTER_KEY = masterKey;
+        this.jsonParser = jsonParser;
         setLayout(new BorderLayout());
 
         JLabel centerLabel = new JLabel("View Passwords", SwingConstants.CENTER);
         centerLabel.setFont(centerLabel.getFont().deriveFont(18f));
         add(centerLabel, BorderLayout.NORTH);
 
-        JPanel credentialsContainer = new JPanel();
+        credentialsContainer = new JPanel();
         credentialsContainer.setLayout(new BoxLayout(credentialsContainer, BoxLayout.Y_AXIS));
 
         JScrollPane scrollPane = new JScrollPane(credentialsContainer);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         add(scrollPane, BorderLayout.CENTER);
+
+        buildCredentials();
+    }
+
+    private void buildCredentials() {
+        credentialsContainer.removeAll();
 
         DomainsList domains = jsonParser.getDomains();
         ArrayList<HashMap<String, String>> jsonList = jsonParser.getJsonList();
@@ -48,7 +61,7 @@ public class View extends JPanel {
             credentialPanel.add(Box.createRigidArea(new Dimension(0, 6)));
             credentialPanel.add(revealBtn);
 
-            JButton deleteBtn = deleteButton();
+            JButton deleteBtn = deleteButton(jsonParser, domain);
             credentialPanel.add(Box.createRigidArea(new Dimension(0, 6)));
             credentialPanel.add(deleteBtn);
 
@@ -59,12 +72,30 @@ public class View extends JPanel {
             credentialsContainer.add(credentialPanel);
             credentialsContainer.add(Box.createRigidArea(new Dimension(0, 8)));
         }
+
+        revalidate();
+        repaint();
     }
 
-    private JButton deleteButton() {
+    private JButton deleteButton(JsonParser jsonParser, Domain domain) {
         JButton deleteBtn = new JButton("Delete");
         deleteBtn.setFont(deleteBtn.getFont().deriveFont(14f));
-        // Add delete functionality here
+
+        deleteBtn.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(
+                    SwingUtilities.getWindowAncestor(View.this),
+                    "Are you sure you want to delete the credential for " + domain.getDomain() + "?",
+                    "Confirm Deletion",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (confirm == JOptionPane.YES_OPTION) {
+                jsonParser.deleteCredential(domain.getDomain());
+                DataWriter dataWriter = new DataWriter();
+                dataWriter.writeJson(jsonParser);
+                firePropertyChange("credentialDeleted", false, true);
+            }
+        });
+
         return deleteBtn;
     }
 
@@ -74,11 +105,10 @@ public class View extends JPanel {
         revealBtn.addActionListener(e -> {
             revealBtn.setEnabled(false);
             revealBtn.setText("Decrypting...");
-            // run decryption off EDT
             SwingWorker<Credential, Void> worker = new SwingWorker<>() {
                 @Override
                 protected Credential doInBackground() throws Exception {
-                    Decryptor decryptor = new Decryptor(jsonParser, new CredentialsManager());
+                    Decryptor decryptor = new Decryptor();
                     try {
                         return decryptor.decryptSingleCredential(jsonMap, domain.getDomain());
                     } catch (IOException ex) {
@@ -108,5 +138,10 @@ public class View extends JPanel {
             worker.execute();
         });
         return revealBtn;
+    }
+
+    public void reload(JsonParser newParser) {
+        this.jsonParser = newParser;
+        SwingUtilities.invokeLater(this::buildCredentials);
     }
 }

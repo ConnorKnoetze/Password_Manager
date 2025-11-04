@@ -23,13 +23,13 @@ public class Generate extends JPanel {
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         mainPanel.add(titleLabel, gbc);
 
-        gbc.gridy = 2;
+        gbc.gridy = 1;
         JTextField passwordField = new JTextField();
         passwordField.setFont(passwordField.getFont().deriveFont(16f));
         passwordField.setEditable(false);
         mainPanel.add(passwordField, gbc);
 
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.weightx = 1.0;
         JButton generateButton = createGenerateButton(passwordField);
         mainPanel.add(generateButton, gbc);

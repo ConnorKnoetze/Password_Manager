@@ -63,4 +63,13 @@ public class JsonParser {
     public DomainsList getDomains() {
         return domains;
     }
+    public void deleteCredential(String domain){
+        for (int i = 0; i < domains.size(); i++) {
+            if (domains.get(i).getDomain().equals(domain)) {
+                domains.remove(i);
+                jsonList.remove(i);
+                break;
+            }
+        }
+    }
 }

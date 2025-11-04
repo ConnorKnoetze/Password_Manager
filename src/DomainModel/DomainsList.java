@@ -26,4 +26,8 @@ public class DomainsList implements Iterable<Domain> {
     public Iterator<Domain> iterator() {
         return domains.iterator();
     }
+
+    public void remove(int i) {
+        domains.remove(i);
+    }
 }
