@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="openstego">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/openstego.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
