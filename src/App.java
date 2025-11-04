@@ -24,12 +24,11 @@ public class App extends JFrame {
     private boolean authenticated = false;
     private static final CredentialsManager credentialsManager = new CredentialsManager();
     private JsonParser jsonParser;
-
     private Page currentPage = Page.AUTH;
-
     private final Page[] pages = Page.values();
-
     private static String jsonContents;
+
+    private static final String MASTER_KEY = "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVphYmNkZWY=";
 
     public App(){
         DataReader dataReader = new DataReader();
