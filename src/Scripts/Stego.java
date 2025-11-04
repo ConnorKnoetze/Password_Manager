@@ -1,7 +1,7 @@
 package Scripts;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.Arrays;
 
 public class Stego {
 
@@ -10,7 +10,7 @@ public class Stego {
     private static final String MESSAGE_FILE_PATH = PROJECT_PATH + "\\textfiles\\key.txt"; // Image to hide
     private static final String COVER_IMAGE_PATH = PROJECT_PATH + "\\resources\\bike.png"; // Cover image
     private static final String SECRET_IMAGE_PATH = PROJECT_PATH + "\\resources\\bike1.png"; // Output stego image
-    private static final String PASSWORD = "yourPassword"; // Password for encryption (optional)
+    private static final String PASSWORD = "UXkQV@w69=%VZEW5h28-WuUXkQV@w69=%VZEW5h28-XuUXkQV@w69=%VZEW5h28-qu"; // Password for encryption (optional)
 
 
     public static void hideString(String message) {
@@ -60,6 +60,53 @@ public class Stego {
         run(command);
     }
 
+    public static void extractString() {
+        String tempDirPath = PROJECT_PATH + "\\temp";
+        File tempDir = new File(tempDirPath);
+
+        // Ensure the temporary directory exists
+        if (!tempDir.exists()) {
+            tempDir.mkdir();
+        }
+
+        try {
+            // Build the OpenStego CLI command for extraction
+            String command = String.format(
+                    "java -jar %s extract -sf %s -xd %s -p %s",
+                    OPENSTEGO_PATH, SECRET_IMAGE_PATH, tempDirPath, PASSWORD
+            );
+
+            // Run the command
+            run(command);
+
+            // Read the extracted file (assuming a single file is extracted)
+            File[] extractedFiles = tempDir.listFiles();
+            System.out.println("Extracted files: " + Arrays.toString(extractedFiles));
+            if (extractedFiles != null && extractedFiles.length > 0) {
+                File extractedFile = extractedFiles[0];
+                try (BufferedReader reader = new BufferedReader(new FileReader(extractedFile))) {
+                    StringBuilder extractedData = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        extractedData.append(line).append(System.lineSeparator());
+                    }
+                    System.out.println("Extracted Data:");
+                    System.out.println(extractedData.toString().trim());
+                }
+
+                // Optionally delete the extracted file after reading
+                extractedFile.delete();
+            } else {
+                System.err.println("No files were extracted.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Clean up the temporary directory
+            tempDir.delete();
+        }
+    }
+
     public static void extractImage() {
         // Build the OpenStego CLI command for extraction
         String command = String.format(
@@ -89,7 +136,9 @@ public class Stego {
 
     public static void main(String[] args) {
 //        hideImage();
-        hideString("This is a secret message.");
-        extractImage();
+//        hideString("This is a secret message.");
+//        extractImage();
+//        extractString();
     }
+
 }
