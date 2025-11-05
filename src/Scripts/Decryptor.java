@@ -15,9 +15,11 @@ import java.util.concurrent.*;
 public class Decryptor extends FileReader {
     private static final String EXECUTABLES_PATH = System.getProperty("user.dir")+"\\AES\\decrypt\\decrypt.exe";
     private static final String OUTPUT_PATH = System.getProperty("user.dir")+"\\textfiles\\output.txt";
-    private static final String MASTER_KEY = "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVphYmNkZWY=";
+    private static String MASTER_KEY;
 
-    public Decryptor() {}
+    public Decryptor(String masterKey) {
+        MASTER_KEY = masterKey;
+    }
     public String decrypt(String key, String keyIv, String passIv, String cipherText) throws IOException {
         List<String> cmd = new ArrayList<>();
         cmd.add(EXECUTABLES_PATH);

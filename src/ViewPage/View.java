@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class View extends JPanel {
-    public static String MASTER_KEY;
     private JsonParser jsonParser;
     private final JPanel credentialsContainer;
+    private static String MASTER_KEY;
 
     public View(JsonParser jsonParser, String masterKey) {
         MASTER_KEY = masterKey;
@@ -108,7 +108,7 @@ public class View extends JPanel {
             SwingWorker<Credential, Void> worker = new SwingWorker<>() {
                 @Override
                 protected Credential doInBackground() throws Exception {
-                    Decryptor decryptor = new Decryptor();
+                    Decryptor decryptor = new Decryptor(MASTER_KEY);
                     try {
                         return decryptor.decryptSingleCredential(jsonMap, domain.getDomain());
                     } catch (IOException ex) {

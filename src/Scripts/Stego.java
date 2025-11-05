@@ -60,9 +60,11 @@ public class Stego {
         run(command);
     }
 
-    public static void extractString() {
+    public static String extractString() {
         String tempDirPath = PROJECT_PATH + "\\temp";
         File tempDir = new File(tempDirPath);
+
+        String outputData = "";
 
         // Ensure the temporary directory exists
         if (!tempDir.exists()) {
@@ -90,8 +92,7 @@ public class Stego {
                     while ((line = reader.readLine()) != null) {
                         extractedData.append(line).append(System.lineSeparator());
                     }
-                    System.out.println("Extracted Data:");
-                    System.out.println(extractedData.toString().trim());
+                    outputData = extractedData.toString().trim();
                 }
 
                 // Optionally delete the extracted file after reading
@@ -105,6 +106,7 @@ public class Stego {
             // Clean up the temporary directory
             tempDir.delete();
         }
+        return outputData;
     }
 
     public static void extractImage() {
@@ -135,10 +137,9 @@ public class Stego {
     }
 
     public static void main(String[] args) {
-//        hideImage();
-//        hideString("This is a secret message.");
-//        extractImage();
-//        extractString();
+        // Example usage:
+        hideString("L6TiRm4lhxaQpo3GNKYafj6ZR36qLLvSoxwv4aCNugR=");
+        String extracted = extractString();
+        System.out.println("Extracted String: " + extracted);
     }
-
 }

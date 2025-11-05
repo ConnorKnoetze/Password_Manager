@@ -7,7 +7,8 @@ import AddPage.Add;
 import GeneratePage.Generate;
 import Scripts.DataReader;
 import Scripts.DataWriter;
-import Scripts.Decryptor;
+import Scripts.GenerateMasterKey;
+import Scripts.Stego;
 import ViewPage.View;
 import Utilities.JsonParser;
 
@@ -15,9 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class App extends JFrame {
     private final CardLayout cardLayout = new CardLayout();
@@ -26,10 +25,9 @@ public class App extends JFrame {
     private static final CredentialsManager credentialsManager = new CredentialsManager();
     private JsonParser jsonParser;
     private Page currentPage = Page.AUTH;
-    private final Page[] pages = Page.values();
     private static String jsonContents;
 
-    private static String MASTER_KEY = "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVphYmNkZWY=";
+    private static String MASTER_KEY;
 
     public App(){
         DataReader dataReader = new DataReader();
@@ -49,7 +47,6 @@ public class App extends JFrame {
         // pages as panels (cards)
         Auth authPanel = getAuthPanel();
         cards.add(authPanel, Page.AUTH.getName());
-
 
         if (!authenticated) {
             showPage(Page.AUTH.getName());
@@ -78,6 +75,8 @@ public class App extends JFrame {
         authPanel.addPropertyChangeListener("authenticated", evt -> {
             authenticated = (boolean) evt.getNewValue();
             if (authenticated) {
+
+                MASTER_KEY = Stego.extractString();
 
                 DataReader dataReader = new DataReader();
                 jsonContents = dataReader.readEncryptedCredentials();
@@ -199,4 +198,5 @@ public class App extends JFrame {
             if (!logout) {dispose();System.exit(0);}
         }
     }
+
 }

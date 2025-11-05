@@ -10,12 +10,17 @@ public class GenerateMasterKey {
             "+","/"
     };
 
-    public static String generateMasterKey() {
+    public static String generate() {
         StringBuilder masterKey = new StringBuilder();
         for (int i = 0; i < 43; i++) {
             int index = (int) (Math.random() * base64Chars.length);
             masterKey.append(base64Chars[index]);
         }
         return masterKey.append("=").toString();
+    }
+
+    public static void main(String[] args) {
+        String masterKey = generate();
+        System.out.println("Generated Master Key: " + masterKey);
     }
 }

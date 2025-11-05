@@ -1,1 +1,12 @@
-
+youtube{
+pass_iv{Mc17GqYyypjIhSas+gzKPA==}
+password{bmwRJqCS0I4DGxsz1jQpA4ZpUz+FxNLKDZKx9J6dZdI=}
+key_iv{GZQTxbd7VA9FOXSER6GUFQ==}
+key{aTLbAxrhqjwgf5ztTRRJo5ocVIJjgt4JWnhY6GME0shcU+gbcmSAngXw3Tupokqz}
+};
+google{
+pass_iv{RMeCnP/uABOOt4fqBIvIzQ==}
+password{XdSqDHBhFiTG3gdNJF2nBiNI9ArkdVhicqrh4DGlnpk=}
+key_iv{cUfXMRhKUF2S8lDUIuzRAA==}
+key{D36jw5n0ARXqSAAjceVa2Y8FA/NHS6y7D8UHOuhcsWliB6BLTGy84bgvEO6yG0Qy}
+}
