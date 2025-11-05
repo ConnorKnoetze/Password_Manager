@@ -23,7 +23,7 @@ public class DataWriter extends FileWriter {
         this.encryptor = new Encryptor(MasterKey);
     }
 
-    public String EncryptCredentials(String JSONContents, JsonParser jsonParser) {
+    public String EncryptCredentials(String JSONContents) {
         boolean newCred = this.credentialsManager.getCredentials().size() > 1;
         if (!JSONContents.isEmpty()){
             JSONContents = JSONContents + ";\n";

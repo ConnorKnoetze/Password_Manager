@@ -22,6 +22,10 @@ public class Credential {
         return this.domain.getDomain();
     }
 
+    public Domain getDomainObject() {
+        return this.domain;
+    }
+
     @Override
     public String toString(){
         return String.format("Credential(domain=%s, username=%s, password=%s)", this.domain.getDomain(), this.username, this.password);

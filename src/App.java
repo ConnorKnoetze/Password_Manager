@@ -1,6 +1,7 @@
 import AuthPage.Auth;
 import Components.InlineNav;
 import Components.Menu;
+import DomainModel.Credential;
 import DomainModel.CredentialsManager;
 import HomePage.Home;
 import AddPage.Add;
@@ -56,17 +57,6 @@ public class App extends JFrame {
             showPage(Page.AUTH.getName());
         }
 
-        // window close cleanup
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                System.out.println("Application is closing. Cleaning up resources...");
-                if (currentPage != Page.AUTH) {
-                    executeEncryption(true);
-                }
-            }
-        });
-
         System.out.println("App started with CredentialsManager: " + credentialsManager.toString());
     }
 
@@ -93,10 +83,27 @@ public class App extends JFrame {
                 cards.add(viewPanel, Page.VIEW.getName());
 
                 Add addPanel = new Add(credentialsManager);
+                // IMPORTANT: update in-memory jsonParser immediately when a new credential is added.
                 addPanel.addPropertyChangeListener("credentialAdded", e -> {
-                    System.out.println("New credential added: " + credentialsManager.toString());
-                    DataReader dr = new DataReader();
-                    jsonParser = new JsonParser(dr.readEncryptedCredentials());
+                    Credential newCred = (Credential) e.getNewValue();
+                    System.out.println("New credential added: " + newCred.getDomainObject());
+
+                    // Ensure parser exists
+                    if (jsonParser == null) {
+                        jsonParser = new JsonParser("");
+                    }
+
+                    // Append the new domain and a placeholder map (DataWriter will fill/encrypt on save)
+                    jsonParser.getDomains().add(newCred.getDomainObject());
+
+                    java.util.HashMap<String, String> placeholder = new java.util.HashMap<>();
+                    placeholder.put("key", "");
+                    placeholder.put("key_iv", "");
+                    placeholder.put("pass_iv", "");
+                    placeholder.put("password", "");
+                    jsonParser.getJsonList().add(placeholder);
+
+                    // refresh the view immediately
                     viewPanel.reload(jsonParser);
                 });
                 cards.add(addPanel, Page.ADD.getName());
@@ -120,6 +127,18 @@ public class App extends JFrame {
                     showPage(name);
                     nav.setActive(name);
                 };
+
+                addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        System.out.println("Application is closing. Cleaning up resources...");
+                        System.out.println("Current Page: " + currentPage);
+                        if (currentPage != Page.AUTH) {
+                            // pass false so executeEncryption will wait and then exit gracefully
+                            executeEncryption(false);
+                        }
+                    }
+                });
 
                 Menu menu = new Menu(navigator);
                 setJMenuBar(menu.getMenuBar());
@@ -157,6 +176,11 @@ public class App extends JFrame {
 
     public void showPage(String name) {
         cardLayout.show(cards, name);
+        try {
+            currentPage = Page.valueOf(name.toUpperCase());
+        } catch (IllegalArgumentException ignored) {
+            // If name doesn't map to Page enum, keep previous currentPage
+        }
     }
 
     public static void main(String[] args) {
@@ -177,7 +201,8 @@ public class App extends JFrame {
                 return;
             }
             try {
-                jsonContents = dataWriter.EncryptCredentials(jsonContents, jsonParser);
+                System.out.println("Standard");
+                jsonContents = dataWriter.EncryptCredentials(jsonContents);
                 dataWriter.writeCipherTexts();
             } catch (Exception ex) {
                 System.err.println("Cleanup task failed: " + ex.getMessage());
@@ -194,8 +219,11 @@ public class App extends JFrame {
         } catch (InterruptedException ignored) {
             Thread.currentThread().interrupt();
         } finally {
-            credentialsManager.clearCredentials();
-            if (!logout) {dispose();System.exit(0);}
+            if (!logout) {
+                credentialsManager.clearCredentials(); // Clear only when not logging out
+                dispose();
+                System.exit(0);
+            }
         }
     }
 
