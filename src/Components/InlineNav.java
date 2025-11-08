@@ -30,7 +30,6 @@ public class InlineNav extends JPanel {
         // prefer a narrow left column
         setPreferredSize(new Dimension(150, 0));
 
-        addNavButton(list, "home", "Home", navigator);
         addNavButton(list, "view", "View", navigator);
         addNavButton(list, "add", "Add", navigator);
         addNavButton(list, "generate", "Generate", navigator);

@@ -17,10 +17,6 @@ public class CredentialsManager {
         return this.credentials;
     }
 
-    public Credential getCredential(int index){
-        return this.credentials.get(index);
-    }
-
     public boolean isEmpty(){
         return this.credentials.isEmpty();
     }

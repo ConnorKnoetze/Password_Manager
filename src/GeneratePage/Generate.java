@@ -3,6 +3,8 @@ package GeneratePage;
 import javax.swing.*;
 import java.awt.*;
 
+import static Utilities.PasswordGenerator.generatePassword;
+
 public class Generate extends JPanel {
     public Generate() {
         setLayout(new BorderLayout());
@@ -39,31 +41,11 @@ public class Generate extends JPanel {
         add(mainPanel, BorderLayout.CENTER);
     }
 
-    private String generateStrongPassword() {
-        String[] CHAR_SETS = {
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZ", // Uppercase letters
-                "abcdefghijklmnopqrstuvwxyz", // Lowercase letters
-                "0123456789",                 // Digits
-                "!@#$%^&*-_=+?"  // Special characters
-        };
-
-        StringBuilder password = new StringBuilder();
-
-        for (int i = 0; i <= 21; i++) {
-            // Logic to generate password using CHAR_SETS
-            int charSetIndex = (int) (Math.random() * CHAR_SETS.length);
-            int charIndex = (int) (Math.random() * CHAR_SETS[charSetIndex].length());
-            password.append(CHAR_SETS[charSetIndex].charAt(charIndex));
-        }
-
-        return password.toString();
-    }
-
     private JButton createGenerateButton(JTextField passwordField) {
         JButton generateButton = new JButton("Generate");
         generateButton.setFont(generateButton.getFont().deriveFont(16f));
         generateButton.addActionListener(e -> {
-            String generatedPassword = generateStrongPassword();
+            String generatedPassword = generatePassword();
             passwordField.setText(generatedPassword);
         });
         return generateButton;

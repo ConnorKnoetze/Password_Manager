@@ -18,17 +18,14 @@ public class Menu {
 
     private void pagesMenu(Consumer<String> navigator) {
         JMenu pagesMenu = new JMenu("Pages");
-        JMenuItem homeItem = new JMenuItem("Home");
         JMenuItem viewItem = new JMenuItem("View Passwords");
         JMenuItem addItem = new JMenuItem("Add Password");
         JMenuItem generateItem = new JMenuItem("Generate Password");
 
-        homeItem.addActionListener(e -> navigator.accept("home"));
         viewItem.addActionListener(e -> navigator.accept("view"));
         addItem.addActionListener(e -> navigator.accept("add"));
         generateItem.addActionListener(e -> navigator.accept("generate"));
 
-        pagesMenu.add(homeItem);
         pagesMenu.add(viewItem);
         pagesMenu.add(addItem);
         pagesMenu.add(generateItem);

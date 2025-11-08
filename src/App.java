@@ -3,7 +3,6 @@ import Components.InlineNav;
 import Components.Menu;
 import DomainModel.Credential;
 import DomainModel.CredentialsManager;
-import HomePage.Home;
 import AddPage.Add;
 import GeneratePage.Generate;
 import Scripts.DataReader;
@@ -72,8 +71,6 @@ public class App extends JFrame {
                 jsonContents = dataReader.readEncryptedCredentials();
                 jsonParser = new JsonParser(jsonContents);
 
-                cards.add(new Home(), Page.HOME.getName());
-
                 View viewPanel = new View(jsonParser, MASTER_KEY);
                 viewPanel.addPropertyChangeListener("credentialDeleted", e -> {
                     DataReader dr = new DataReader();
@@ -110,9 +107,9 @@ public class App extends JFrame {
                 cards.add(new Generate(), Page.GENERATE.getName());
 
                 System.out.println("User authenticated successfully.");
-                showPage(Page.HOME.getName());
+                showPage(Page.VIEW.getName());
                 // create inline nav that calls showPage
-                InlineNav nav = new InlineNav(this::showPage, Page.HOME.getName());
+                InlineNav nav = new InlineNav(this::showPage, Page.VIEW.getName());
 
                 // main container: nav on the left, cards center
                 JPanel main = new JPanel(new BorderLayout());
@@ -142,7 +139,7 @@ public class App extends JFrame {
 
                 Menu menu = new Menu(navigator);
                 setJMenuBar(menu.getMenuBar());
-                showPage(Page.HOME.getName());
+                showPage(Page.VIEW.getName());
                 JButton logoutButton = getLogoutButton();
                 main.add(logoutButton, BorderLayout.SOUTH);
                 revalidate();
