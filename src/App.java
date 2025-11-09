@@ -125,10 +125,7 @@ public class App extends JFrame {
                 addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent e) {
-                        System.out.println("Application is closing. Cleaning up resources...");
-                        System.out.println("Current Page: " + currentPage);
                         if (currentPage != Page.AUTH) {
-                            //Write encrypted credentials Logic Here
                             executeEncryption();
                         }
                     }
@@ -158,7 +155,6 @@ public class App extends JFrame {
             authOnly.add(cards, BorderLayout.CENTER);
             setContentPane(authOnly);
 
-            //Write encrypted credentials Logic Here
             executeEncryption();
         });
 

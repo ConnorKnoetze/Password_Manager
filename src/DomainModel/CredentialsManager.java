@@ -1,18 +1,19 @@
 package DomainModel;
 
+import Scripts.DataReader;
 import Scripts.Encryptor;
+import Scripts.Stego;
 import Utilities.EncryptedFilesReader;
 import Utilities.JsonParser;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CredentialsManager {
-    private ArrayList<HashMap<String, String>> jsonList;
-    private ArrayList<Domain> domains;
-    private Encryptor encryptor;
+    private final ArrayList<HashMap<String, String>> jsonList;
+    private final ArrayList<Domain> domains;
+    private final Encryptor encryptor;
 
     public CredentialsManager(){
         jsonList = new ArrayList<>(){};
@@ -85,11 +86,11 @@ public class CredentialsManager {
     }
 
     public static void main(String[] args){
-        Credential cred = new Credential(new Domain("youtube"), "Connor", "pass");
+        DataReader dataReader = new DataReader();
+        String jsonContents = dataReader.readEncryptedCredentials();
+        JsonParser jsonParser = new JsonParser(jsonContents);
+        CredentialsManager credentialsManager = new CredentialsManager(jsonParser, Stego.extractString());
 
-        CredentialsManager credentialsManager = new CredentialsManager();
 
-        credentialsManager.addCredential(cred);
-        credentialsManager.deleteCredential("youtube");
     }
 }
