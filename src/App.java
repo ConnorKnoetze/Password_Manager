@@ -79,25 +79,6 @@ public class App extends JFrame {
                 Add addPanel = new Add(credentialsManager);
                 // IMPORTANT: update in-memory jsonParser immediately when a new credential is added.
                 addPanel.addPropertyChangeListener("credentialAdded", e -> {
-                    Credential newCred = (Credential) e.getNewValue();
-                    System.out.println("New credential added: " + newCred.getDomainObject());
-
-                    // Ensure parser exists
-                    if (jsonParser == null) {
-                        jsonParser = new JsonParser("");
-                    }
-
-                    // Append the new domain and a placeholder map (DataWriter will fill/encrypt on save)
-                    jsonParser.getDomains().add(newCred.getDomainObject());
-
-                    java.util.HashMap<String, String> placeholder = new java.util.HashMap<>();
-                    placeholder.put("key", "");
-                    placeholder.put("key_iv", "");
-                    placeholder.put("pass_iv", "");
-                    placeholder.put("password", "");
-                    jsonParser.getJsonList().add(placeholder);
-
-                    // refresh the view immediately
                     viewPanel.reload(credentialsManager);
                 });
                 cards.add(addPanel, Page.ADD.getName());

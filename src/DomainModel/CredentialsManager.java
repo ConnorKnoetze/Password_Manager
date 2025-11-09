@@ -13,6 +13,8 @@ import java.util.HashMap;
 public class CredentialsManager {
     private final ArrayList<HashMap<String, String>> jsonList;
     private final ArrayList<Domain> domains;
+    private ArrayList<Domain> searchedDomains = new ArrayList<>(){};
+    private ArrayList<HashMap<String, String>> searchedJsonList = new ArrayList<>(){};
     private final Encryptor encryptor;
 
     public CredentialsManager(){
@@ -83,6 +85,19 @@ public class CredentialsManager {
 
     public ArrayList<Domain> getDomains() {
         return domains;
+    }
+
+    public void setSearched(ArrayList<Domain> searchedDomains, ArrayList<HashMap<String, String>> searchedJsonList) {
+        this.searchedDomains = searchedDomains;
+        this.searchedJsonList = searchedJsonList;
+    }
+
+    public ArrayList<Domain> getSearchedDomains(){
+        return this.searchedDomains;
+    }
+
+    public ArrayList<HashMap<String, String>> getSearchedJsonList(){
+        return this.searchedJsonList;
     }
 
     public static void main(String[] args){

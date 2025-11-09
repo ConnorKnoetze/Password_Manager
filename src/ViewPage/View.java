@@ -6,7 +6,7 @@ import DomainModel.CredentialsManager;
 import DomainModel.Domain;
 import Scripts.DataWriter;
 import Scripts.Decryptor;
-import Utilities.JsonParser;
+import Utilities.Search;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,9 +24,18 @@ public class View extends JPanel {
         this.credentialsManager = credentialsManager;
         setLayout(new BorderLayout());
 
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BorderLayout());
+
         JLabel centerLabel = new JLabel("View Passwords", SwingConstants.CENTER);
         centerLabel.setFont(centerLabel.getFont().deriveFont(18f));
-        add(centerLabel, BorderLayout.NORTH);
+        topPanel.add(centerLabel, BorderLayout.NORTH);
+
+
+        JPanel searchPanel = getSearchPanel(this, credentialsManager);
+        topPanel.add(searchPanel, BorderLayout.CENTER);
+
+        add(topPanel, BorderLayout.NORTH);
 
         credentialsContainer = new JPanel();
         credentialsContainer.setLayout(new BoxLayout(credentialsContainer, BoxLayout.Y_AXIS));
@@ -36,14 +45,51 @@ public class View extends JPanel {
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         add(scrollPane, BorderLayout.CENTER);
 
-        buildCredentials();
+        buildCredentials(credentialsManager.getDomains(), credentialsManager.getJsonList());
     }
 
-    private void buildCredentials() {
-        credentialsContainer.removeAll();
+    private static JPanel getSearchPanel(View view, CredentialsManager credentialsManager){
+        JPanel searchPanel = new JPanel();
+        searchPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 4, 4, 4);
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        ArrayList<Domain> domains = credentialsManager.getDomains();
-        ArrayList<HashMap<String, String>> jsonList = credentialsManager.getJsonList();
+        JTextField searchTextField = new JTextField();
+        searchTextField.setFont(searchTextField.getFont().deriveFont(16f));
+        gbc.gridx = 0;
+        gbc.weightx = 0.95;
+        searchPanel.add(searchTextField, gbc);
+
+        JButton searchButton = new JButton("Search");
+        searchButton.setFont(searchTextField.getFont().deriveFont(18f));
+        gbc.gridx = 1;
+        gbc.weightx = 0.05;
+        searchButton.addActionListener(e -> {
+            String query = searchTextField.getText();
+            if (query.equalsIgnoreCase("")){
+                view.buildCredentials(credentialsManager.getDomains(), credentialsManager.getJsonList());
+                return;
+            }
+            Search.search(credentialsManager, query);
+            for(Domain domain : credentialsManager.getSearchedDomains()){
+                System.out.println(domain.getDomain());
+                view.buildCredentials(credentialsManager.getSearchedDomains(), credentialsManager.getSearchedJsonList());
+            }
+        });
+
+        searchButton.registerKeyboardAction(actionListener -> searchButton.doClick(),
+                KeyStroke.getKeyStroke("ENTER"),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+        searchPanel.add(searchButton, gbc);
+
+        return searchPanel;
+    }
+
+    private void buildCredentials(ArrayList<Domain> domains, ArrayList<HashMap<String, String>> jsonList) {
+        credentialsContainer.removeAll();
 
         int i = 0;
         for (Domain domain : domains) {
@@ -141,6 +187,7 @@ public class View extends JPanel {
 
     public void reload(CredentialsManager credentialsManager) {
         this.credentialsManager = credentialsManager;
-        SwingUtilities.invokeLater(this::buildCredentials);
+        Runnable doBuiltCredentials = () -> buildCredentials(credentialsManager.getDomains(), credentialsManager.getJsonList());
+        SwingUtilities.invokeLater(doBuiltCredentials);
     }
 }

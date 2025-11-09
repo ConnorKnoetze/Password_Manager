@@ -9,9 +9,10 @@ pass_iv{FIAoUi1jdhJh7FySI0i+KA==}
 password{Y4LkpOAKIvmq5EsvHCdBGKj6T+crBVb0cU2I5a5hnm0=}
 key_iv{vRSn2flXY2UPCkDcNYABWg==}
 key{gIw2TMseFM5fuG9mpyvUXbpxodxtcpG5P1j+XPkcKQGh/adTrvR7z2Pz524YPRJP}
-};Youtube{
-pass_iv{4ap5zKDkb+KDYtLmjDmhPg==}
-password{0jiAl5Yof6xus0sjxzXLRHqZY/AhFzsIRBFXkcYoXtM=}
-key_iv{PxEBcfHGJqj79f/kzXn+/Q==}
-key{eGD+vi8D1HlX8LyAc6Z4wP6rWTMRVRawDApX0aiZHNCmYspzcF9ZmUkV2w3gk3bS}
 };
+weebCentral{
+pass_iv{WuI/9sCnMjk9PxhKx70E7Q==}
+password{SCZPks8H4GWgAIWcPzZYSYHAhKAFC9zr1p+X72kd0gI=}
+key_iv{1mGssjOrCNFPk3VsldXZjg==}
+key{dVLL4RJcsa/WeagGMN5W2LC7gkRo7r7m31gnIGc6cGvVAzzuIJq1BfwcF8Il+rkQ}
+}

@@ -28,6 +28,7 @@ public class Auth extends JPanel {
         gbc.gridwidth = 2;
         gbc.weightx = 1.0;
         add(passwordField, gbc);
+        passwordField.setText("password123");
 
         gbc.gridy = 2;
         gbc.gridwidth = 1;
