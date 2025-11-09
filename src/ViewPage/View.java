@@ -154,11 +154,7 @@ public class View extends JPanel {
                 @Override
                 protected Credential doInBackground() throws Exception {
                     Decryptor decryptor = new Decryptor(MASTER_KEY);
-                    try {
-                        return decryptor.decryptSingleCredential(jsonMap, domain.getDomain());
-                    } catch (IOException ex) {
-                        throw ex;
-                    }
+                    return decryptor.decryptSingleCredential(jsonMap, domain.getDomain());
                 }
 
                 @Override
