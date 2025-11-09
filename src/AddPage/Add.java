@@ -3,9 +3,11 @@ package AddPage;
 import DomainModel.Credential;
 import DomainModel.CredentialsManager;
 import DomainModel.Domain;
+import Utilities.PasswordGenerator;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class Add extends JPanel {
 
@@ -54,15 +56,18 @@ public class Add extends JPanel {
         gbc.weightx = 1.0;
         form.add(passwordField, gbc);
 
-        JTextField responseField = new JTextField();
+        form.add(createGenerateButton(gbc, passwordField), gbc);
+
+        // Response
+        JLabel responseField = new JLabel();
         responseField.setFont(responseField.getFont().deriveFont(16f));
-        responseField.setEditable(false);
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.weightx = 1.0;
         form.add(responseField, gbc);
+        responseField.setText(" ");
 
-        responseField.setText("");
+
 
         add(form, BorderLayout.CENTER);
 
@@ -100,5 +105,22 @@ public class Add extends JPanel {
             responseField.setText(String.format("Credential for %s added successfully.", credential.getDomain()));
             firePropertyChange("credentialAdded", null, credential);
         });
+    }
+
+    public JButton createGenerateButton(GridBagConstraints gbc, JPasswordField passwordField){
+        JButton generateButton = new JButton();
+        generateButton.setFont(generateButton.getFont().deriveFont(16f));
+        generateButton.setText("Generate Password");
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.weightx = 0.0;
+
+        generateButton.addActionListener( e -> {
+            String generatedPass = PasswordGenerator.generatePassword();
+            passwordField.setText(generatedPass);
+            passwordField.setEchoChar((char) 0);
+        });
+
+        return generateButton;
     }
 }
