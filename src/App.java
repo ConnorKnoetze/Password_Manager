@@ -7,7 +7,6 @@ import AddPage.Add;
 import GeneratePage.Generate;
 import Scripts.DataReader;
 import Scripts.DataWriter;
-import Scripts.GenerateMasterKey;
 import Scripts.Stego;
 import ViewPage.View;
 import Utilities.JsonParser;
@@ -16,23 +15,23 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.concurrent.*;
 
 public class App extends JFrame {
     private final CardLayout cardLayout = new CardLayout();
     private final JPanel cards = new JPanel(cardLayout);
     private boolean authenticated = false;
-    private static final CredentialsManager credentialsManager = new CredentialsManager();
+    private final CredentialsManager credentialsManager;
     private JsonParser jsonParser;
     private Page currentPage = Page.AUTH;
     private static String jsonContents;
 
-    private static String MASTER_KEY;
+    private static final String MASTER_KEY = Stego.extractString();
 
     public App(){
         DataReader dataReader = new DataReader();
         jsonContents = dataReader.readEncryptedCredentials();
         jsonParser = new JsonParser(jsonContents);
+        credentialsManager = new CredentialsManager(jsonParser, MASTER_KEY);
         app();
     }
 
@@ -65,17 +64,15 @@ public class App extends JFrame {
             authenticated = (boolean) evt.getNewValue();
             if (authenticated) {
 
-                MASTER_KEY = Stego.extractString();
-
                 DataReader dataReader = new DataReader();
                 jsonContents = dataReader.readEncryptedCredentials();
                 jsonParser = new JsonParser(jsonContents);
 
-                View viewPanel = new View(jsonParser, MASTER_KEY);
+                View viewPanel = new View(credentialsManager, MASTER_KEY);
                 viewPanel.addPropertyChangeListener("credentialDeleted", e -> {
                     DataReader dr = new DataReader();
                     jsonParser = new JsonParser(dr.readEncryptedCredentials());
-                    viewPanel.reload(jsonParser);
+                    viewPanel.reload(credentialsManager);
                 });
                 cards.add(viewPanel, Page.VIEW.getName());
 
@@ -101,7 +98,7 @@ public class App extends JFrame {
                     jsonParser.getJsonList().add(placeholder);
 
                     // refresh the view immediately
-                    viewPanel.reload(jsonParser);
+                    viewPanel.reload(credentialsManager);
                 });
                 cards.add(addPanel, Page.ADD.getName());
                 cards.add(new Generate(), Page.GENERATE.getName());
@@ -131,8 +128,8 @@ public class App extends JFrame {
                         System.out.println("Application is closing. Cleaning up resources...");
                         System.out.println("Current Page: " + currentPage);
                         if (currentPage != Page.AUTH) {
-                            // pass false so executeEncryption will wait and then exit gracefully
-                            executeEncryption(false);
+                            //Write encrypted credentials Logic Here
+                            executeEncryption();
                         }
                     }
                 });
@@ -161,7 +158,8 @@ public class App extends JFrame {
             authOnly.add(cards, BorderLayout.CENTER);
             setContentPane(authOnly);
 
-            executeEncryption(true);
+            //Write encrypted credentials Logic Here
+            executeEncryption();
         });
 
         logoutButton.registerKeyboardAction(actionListener -> logoutButton.doClick(),
@@ -175,9 +173,7 @@ public class App extends JFrame {
         cardLayout.show(cards, name);
         try {
             currentPage = Page.valueOf(name.toUpperCase());
-        } catch (IllegalArgumentException ignored) {
-            // If name doesn't map to Page enum, keep previous currentPage
-        }
+        } catch (IllegalArgumentException ignored) {}
     }
 
     public static void main(String[] args) {
@@ -188,40 +184,10 @@ public class App extends JFrame {
         });
     }
 
-    private void executeEncryption(boolean logout) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<?> future = executor.submit(() -> {
-            DataWriter dataWriter = new DataWriter(credentialsManager, MASTER_KEY);
-            if (credentialsManager.isEmpty()) {
-                System.out.println("No credentials to save.");
-                dataWriter.writeJson(jsonParser);
-                return;
-            }
-            try {
-                System.out.println("Standard");
-                jsonContents = dataWriter.EncryptCredentials(jsonContents);
-                dataWriter.writeCipherTexts();
-            } catch (Exception ex) {
-                System.err.println("Cleanup task failed: " + ex.getMessage());
-            }
-            System.out.println("Cleanup completed.");
-        });
-        executor.shutdown();
-        try {
-            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
-                future.cancel(true);
-                executor.shutdownNow();
-                System.err.println("Cleanup timed out; forcing exit.");
-            }
-        } catch (InterruptedException ignored) {
-            Thread.currentThread().interrupt();
-        } finally {
-            if (!logout) {
-                credentialsManager.clearCredentials(); // Clear only when not logging out
-                dispose();
-                System.exit(0);
-            }
-        }
+    public void executeEncryption(){
+        DataWriter dataWriter = new DataWriter();
+
+        dataWriter.writeJson(credentialsManager);
     }
 
 }

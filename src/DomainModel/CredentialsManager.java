@@ -1,38 +1,95 @@
 package DomainModel;
 
+import Scripts.Encryptor;
+import Utilities.EncryptedFilesReader;
+import Utilities.JsonParser;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CredentialsManager {
-    private ArrayList<Credential> credentials;
+    private ArrayList<HashMap<String, String>> jsonList;
+    private ArrayList<Domain> domains;
+    private Encryptor encryptor;
 
     public CredentialsManager(){
-        this.credentials = new ArrayList<Credential>();
+        jsonList = new ArrayList<>(){};
+        domains = new ArrayList<>(){};
+        encryptor = new Encryptor("MASTER_KEY");
+    }
+
+    public CredentialsManager(JsonParser jp, String MK){
+        jsonList = jp.getJsonList();
+        domains = jp.getDomains();
+        encryptor = new Encryptor(MK);
     }
 
     public void addCredential(Credential credential){
-        this.credentials.add(credential);
-    }
+        PlainText pt = new PlainText(credential.getUsername(), credential.getPassword());
+        try{
+            encryptor.encrypt(pt);
+        }catch (IOException ignored){}
 
-    public ArrayList<Credential> getCredentials(){
-        return this.credentials;
-    }
+        EncryptedFilesReader reader = new EncryptedFilesReader();
+        reader.ReadFiles();
+        String storableCreds = reader.getStorableCreds();
 
-    public boolean isEmpty(){
-        return this.credentials.isEmpty();
-    }
+        System.out.println(storableCreds);
 
-    public void clearCredentials(){
-        this.credentials.clear();
-    }
+        domains.add(credential.getDomainObject());
 
-    @Override
-    public String toString(){
+        HashMap<String, String> jsonMap = new HashMap<>();
         StringBuilder sb = new StringBuilder();
-        sb.append("CredentialsManager{");
-        for (Credential credential : credentials) {
-            sb.append(credential.toString());
+
+        boolean key = true;
+
+        int prevIndex = 0;
+
+        for (int i = 0; i < storableCreds.length()-1; i++) {
+            if (storableCreds.charAt(i) == '{') {
+                String part = storableCreds.substring(prevIndex, i).trim();
+                if (key) {
+                    sb = new StringBuilder();
+                    sb.append(part);
+                    key = false;
+                }
+                prevIndex = i + 1;
+            } else if (storableCreds.charAt(i) == '}') {
+                String part = storableCreds.substring(prevIndex, i).trim();
+                jsonMap.put(sb.toString(), part);
+                prevIndex = i + 1;
+                key = true;
+            }
         }
-        sb.append("}");
-        return sb.toString();
+        jsonList.add(jsonMap);
+    }
+
+    public void deleteCredential(String domain){
+        for (int i = 0; i < domains.size(); i++) {
+            if (domains.get(i).getDomain().equals(domain)) {
+                domains.remove(i);
+                jsonList.remove(i);
+                break;
+            }
+        }
+    }
+
+    public ArrayList<HashMap<String, String>> getJsonList(){
+        return this.jsonList;
+    }
+
+    public ArrayList<Domain> getDomains() {
+        return domains;
+    }
+
+    public static void main(String[] args){
+        Credential cred = new Credential(new Domain("youtube"), "Connor", "pass");
+
+        CredentialsManager credentialsManager = new CredentialsManager();
+
+        credentialsManager.addCredential(cred);
+        credentialsManager.deleteCredential("youtube");
     }
 }

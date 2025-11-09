@@ -1,14 +1,13 @@
 package Utilities;
 
 import DomainModel.Domain;
-import DomainModel.DomainsList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class JsonParser {
     private ArrayList<HashMap<String, String>> jsonList = new ArrayList<>();
-    private DomainsList domains = new DomainsList();
+    private ArrayList<Domain> domains = new ArrayList<>(){};
     private HashMap<String, String> jsonMap = new HashMap<>();
 
 
@@ -60,7 +59,7 @@ public class JsonParser {
     public ArrayList<HashMap<String, String>> getJsonList() {
         return jsonList;
     }
-    public DomainsList getDomains() {
+    public ArrayList<Domain> getDomains() {
         return domains;
     }
     public void deleteCredential(String domain){

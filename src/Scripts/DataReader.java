@@ -10,7 +10,4 @@ public class DataReader extends FileReader {
         return super.readFile(new java.io.File(CREDS_PATH));
     }
 
-    public static void main(String[] args) {
-        DataReader reader = new DataReader();
-    }
 }

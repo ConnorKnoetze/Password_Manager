@@ -4,7 +4,6 @@ import Components.CredentialPanel;
 import DomainModel.Credential;
 import DomainModel.CredentialsManager;
 import DomainModel.Domain;
-import DomainModel.DomainsList;
 import Scripts.DataWriter;
 import Scripts.Decryptor;
 import Utilities.JsonParser;
@@ -16,13 +15,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class View extends JPanel {
-    private JsonParser jsonParser;
+    private CredentialsManager credentialsManager;
     private final JPanel credentialsContainer;
     private static String MASTER_KEY;
 
-    public View(JsonParser jsonParser, String masterKey) {
+    public View(CredentialsManager credentialsManager, String masterKey) {
         MASTER_KEY = masterKey;
-        this.jsonParser = jsonParser;
+        this.credentialsManager = credentialsManager;
         setLayout(new BorderLayout());
 
         JLabel centerLabel = new JLabel("View Passwords", SwingConstants.CENTER);
@@ -43,8 +42,8 @@ public class View extends JPanel {
     private void buildCredentials() {
         credentialsContainer.removeAll();
 
-        DomainsList domains = jsonParser.getDomains();
-        ArrayList<HashMap<String, String>> jsonList = jsonParser.getJsonList();
+        ArrayList<Domain> domains = credentialsManager.getDomains();
+        ArrayList<HashMap<String, String>> jsonList = credentialsManager.getJsonList();
 
         int i = 0;
         for (Domain domain : domains) {
@@ -56,12 +55,12 @@ public class View extends JPanel {
                     "••••••••••••"
             );
 
-            JButton revealBtn = getRevealButton(jsonParser, jsonMap, domain, credentialPanel);
+            JButton revealBtn = getRevealButton(jsonMap, domain, credentialPanel);
 
             credentialPanel.add(Box.createRigidArea(new Dimension(0, 6)));
             credentialPanel.add(revealBtn);
 
-            JButton deleteBtn = deleteButton(jsonParser, domain);
+            JButton deleteBtn = deleteButton(credentialsManager, domain);
             credentialPanel.add(Box.createRigidArea(new Dimension(0, 6)));
             credentialPanel.add(deleteBtn);
 
@@ -77,7 +76,7 @@ public class View extends JPanel {
         repaint();
     }
 
-    private JButton deleteButton(JsonParser jsonParser, Domain domain) {
+    private JButton deleteButton(CredentialsManager credentialsManager, Domain domain) {
         JButton deleteBtn = new JButton("Delete");
         deleteBtn.setFont(deleteBtn.getFont().deriveFont(14f));
 
@@ -89,9 +88,9 @@ public class View extends JPanel {
                     JOptionPane.YES_NO_OPTION
             );
             if (confirm == JOptionPane.YES_OPTION) {
-                jsonParser.deleteCredential(domain.getDomain());
+                credentialsManager.deleteCredential(domain.getDomain());
                 DataWriter dataWriter = new DataWriter();
-                dataWriter.writeJson(jsonParser);
+                dataWriter.writeJson(credentialsManager);
                 firePropertyChange("credentialDeleted", false, true);
             }
         });
@@ -99,7 +98,7 @@ public class View extends JPanel {
         return deleteBtn;
     }
 
-    private JButton getRevealButton(JsonParser jsonParser, HashMap<String, String> jsonMap, Domain domain, CredentialPanel credentialPanel) {
+    private JButton getRevealButton(HashMap<String, String> jsonMap, Domain domain, CredentialPanel credentialPanel) {
         JButton revealBtn = new JButton("Reveal");
         revealBtn.setFont(revealBtn.getFont().deriveFont(14f));
         revealBtn.addActionListener(e -> {
@@ -140,8 +139,8 @@ public class View extends JPanel {
         return revealBtn;
     }
 
-    public void reload(JsonParser newParser) {
-        this.jsonParser = newParser;
+    public void reload(CredentialsManager credentialsManager) {
+        this.credentialsManager = credentialsManager;
         SwingUtilities.invokeLater(this::buildCredentials);
     }
 }
