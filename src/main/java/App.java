@@ -1,13 +1,13 @@
-import AuthPage.Auth;
+import pages.AuthPage.Auth;
 import Components.InlineNav;
 import Components.Menu;
 import DomainModel.CredentialsManager;
-import AddPage.Add;
-import GeneratePage.Generate;
+import pages.AddPage.Add;
+import pages.GeneratePage.Generate;
 import Scripts.DataReader;
 import Scripts.DataWriter;
 import Scripts.Stego;
-import ViewPage.View;
+import pages.ViewPage.View;
 import Utilities.JsonParser;
 
 import javax.swing.*;

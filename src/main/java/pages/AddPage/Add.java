@@ -1,4 +1,4 @@
-package AddPage;
+package pages.AddPage;
 
 import DomainModel.Credential;
 import DomainModel.CredentialsManager;
