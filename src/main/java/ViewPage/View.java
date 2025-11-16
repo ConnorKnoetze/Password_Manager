@@ -10,7 +10,6 @@ import Utilities.Search;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -97,8 +96,8 @@ public class View extends JPanel {
 
             CredentialPanel credentialPanel = new CredentialPanel(
                     domain.getDomain(),
-                    "••••••••••••",
-                    "••••••••••••"
+                    "Encrypted",
+                    "Encrypted"
             );
 
             JButton revealBtn = getRevealButton(jsonMap, domain, credentialPanel);

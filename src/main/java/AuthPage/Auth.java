@@ -56,7 +56,7 @@ public class Auth extends JPanel {
                 passwordField.setEchoChar((char) 0);
                 showPasswordButton.setText("Hide Password");
             } else {
-                passwordField.setEchoChar('•');
+                passwordField.setEchoChar('\u2022');
                 showPasswordButton.setText("Show Password");
             }
         });

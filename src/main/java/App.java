@@ -1,7 +1,6 @@
 import AuthPage.Auth;
 import Components.InlineNav;
 import Components.Menu;
-import DomainModel.Credential;
 import DomainModel.CredentialsManager;
 import AddPage.Add;
 import GeneratePage.Generate;
@@ -55,7 +54,7 @@ public class App extends JFrame {
             showPage(Page.AUTH.getName());
         }
 
-        System.out.println("App started with CredentialsManager: " + credentialsManager.toString());
+        System.out.println("main.App started with CredentialsManager: " + credentialsManager.toString());
     }
 
     private Auth getAuthPanel() {

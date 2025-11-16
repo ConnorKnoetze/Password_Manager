@@ -1,13 +1,10 @@
 package Scripts;
 
 import DomainModel.*;
-import Utilities.EncryptedFilesReader;
 import Utilities.FileWriter;
-import Utilities.JsonParser;
 
 
 import java.util.ArrayList;
-import java.io.*;
 import java.util.HashMap;
 
 public class DataWriter extends FileWriter {
