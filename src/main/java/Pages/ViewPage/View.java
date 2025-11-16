@@ -1,4 +1,4 @@
-package pages.ViewPage;
+package Pages.ViewPage;
 
 import Components.CredentialPanel;
 import DomainModel.Credential;

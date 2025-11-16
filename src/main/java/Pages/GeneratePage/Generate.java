@@ -1,4 +1,4 @@
-package pages.GeneratePage;
+package Pages.GeneratePage;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,13 +1,13 @@
 package Utilities;
 
 public class PasswordGenerator {
+    private static final String[] CHAR_SETS = {
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ", // Uppercase letters
+            "abcdefghijklmnopqrstuvwxyz", // Lowercase letters
+            "0123456789",                 // Digits
+            "!@#$%^&*-_=+?"  // Special characters
+    };
     public static String generatePassword(){
-        String[] CHAR_SETS = {
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZ", // Uppercase letters
-                "abcdefghijklmnopqrstuvwxyz", // Lowercase letters
-                "0123456789",                 // Digits
-                "!@#$%^&*-_=+?"  // Special characters
-        };
 
         StringBuilder password = new StringBuilder();
 

@@ -1,4 +1,4 @@
-package pages.AuthPage;
+package Pages.AuthPage;
 
 import javax.swing.*;
 import java.awt.*;

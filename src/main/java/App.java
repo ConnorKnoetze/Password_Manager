@@ -1,13 +1,13 @@
-import pages.AuthPage.Auth;
+import Pages.AuthPage.Auth;
 import Components.InlineNav;
 import Components.Menu;
 import DomainModel.CredentialsManager;
-import pages.AddPage.Add;
-import pages.GeneratePage.Generate;
+import Pages.AddPage.Add;
+import Pages.GeneratePage.Generate;
 import Scripts.DataReader;
 import Scripts.DataWriter;
 import Scripts.Stego;
-import pages.ViewPage.View;
+import Pages.ViewPage.View;
 import Utilities.JsonParser;
 
 import javax.swing.*;
@@ -82,7 +82,6 @@ public class App extends JFrame {
                 });
                 cards.add(addPanel, Page.ADD.getName());
                 cards.add(new Generate(), Page.GENERATE.getName());
-
                 System.out.println("User authenticated successfully.");
                 showPage(Page.VIEW.getName());
                 // create inline nav that calls showPage
@@ -139,7 +138,8 @@ public class App extends JFrame {
         });
 
         logoutButton.registerKeyboardAction(actionListener -> logoutButton.doClick(),
-                KeyStroke.getKeyStroke("ESCAPE"),
+
+                              KeyStroke.getKeyStroke("ESCAPE"),
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
 
         return logoutButton;

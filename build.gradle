@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 repositories {
@@ -17,4 +18,12 @@ application {
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+}
+shadowJar {
+    manifest { attributes 'Main-Class': 'App' }
+    archiveBaseName.set('Password_Manager-all')
 }
