@@ -31,3 +31,22 @@ bin/
 
 ### Project ###
 /textfiles/*.txt
+
+# Gradle
+.gradle/
+build/
+# keep the wrapper committed (do NOT ignore these)
+!/gradlew
+!/gradlew.bat
+!/gradle/wrapper/gradle-wrapper.jar
+!/gradle/wrapper/gradle-wrapper.properties
+
+# Local Gradle properties (often contains SDK paths) - don't commit if machine-specific
+local.properties
+
+# Note: This repository contains a `libs/` folder with third-party jars (e.g. libs/openstego.jar).
+# If you want to keep third-party jars in source control, do NOT ignore /libs/.
+# If you'd prefer to exclude all jars, you could add:
+# *.jar
+# or /libs/*.jar
+# but that will remove openstego.jar from the repository if it was checked in.
