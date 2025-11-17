@@ -12,7 +12,7 @@ public class Search {
         ArrayList<Domain> searchedDomains = new ArrayList<>(){};
         ArrayList<HashMap<String, String>> searchedJsonList = new ArrayList<>(){};
 
-        int i =0;
+        int i=0;
 
         for(Domain domain : domains){
             if (domain.getDomain().toLowerCase().contains(query.toLowerCase())){
