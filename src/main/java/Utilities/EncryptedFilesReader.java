@@ -31,12 +31,6 @@ public class EncryptedFilesReader extends FileReader {
         this.storableCreds = content.toString();
     }
 
-    public static void main(String[] args) {
-        EncryptedFilesReader reader = new EncryptedFilesReader();
-        reader.ReadFiles();
-        System.out.println(reader.getStorableCreds());
-    }
-
     public String getStorableCreds() {
         return storableCreds;
     }
