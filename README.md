@@ -8,8 +8,6 @@ A simple desktop (Swing) password manager written in Java that:
 - Hides / extracts the master key using steganography (OpenStego) so the app can retrieve the master key at runtime.
 - Provides a Swing UI to add, view (reveal), and delete credentials.
 
-> Note: This repository is a developer project/demonstration and has platform assumptions (Windows-style paths). Review the security notes below before using it for any real secrets.
-
 ## Quick overview — how it works
 
 1. Master key
